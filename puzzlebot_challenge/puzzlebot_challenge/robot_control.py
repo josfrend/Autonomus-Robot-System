@@ -33,7 +33,7 @@ class RobotControl(Node):
     and publishes velocity commands, goals, and other relevant information.
     """
     def __init__(self):
-        super().__init__('Robot Control')
+        super().__init__('Robot_Control')
 
         # Initialize subscribers for odometry, markers info and other nodes feedback
         self.odometry_sub = self.create_subscription(Odometry, '/odom', self.odometry_callback, 10)

@@ -5,7 +5,7 @@ from launch.substitutions import Command
 
 
 def generate_launch_description():
-    urdf_model_path = get_package_share_directory('puzzlebot_challenge') + '/urdf/puzzlebot.urdf'
+    urdf_model_path = get_package_share_directory('puzzlebot_challenge') + '/urdf/simple.urdf'
     rviz_config_path = get_package_share_directory('puzzlebot_challenge') + '/rviz/manipulator.rviz'
 
     robot_state_publisher_node = Node(
@@ -75,16 +75,16 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # robot_state_publisher_node,
-        # rviz_node,
-        # tf2_ros,
-        # pose_sim, 
-        # joint_state, 
+        robot_state_publisher_node,
+        rviz_node,
+        tf2_ros,
+        pose_sim, 
+        joint_state, 
         localisation,
-        control,
-        bug2,
-        aruco,
-        handle
+        # control,
+        # bug2,
+        # aruco,
+        # handle
     ])
 
 if __name__ == '__main__':
