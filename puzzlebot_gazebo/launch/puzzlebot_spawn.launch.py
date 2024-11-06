@@ -41,7 +41,7 @@ def generate_launch_description():
 
     # Directories
     pkg_name = get_package_share_directory(
-        'puzzlebot_challenge')
+        'puzzlebot_gazebo')
     # pkg_turtlebot4_description = get_package_share_directory(
     #     'turtlebot4_description')
     # pkg_turtlebot4_viz = get_package_share_directory(

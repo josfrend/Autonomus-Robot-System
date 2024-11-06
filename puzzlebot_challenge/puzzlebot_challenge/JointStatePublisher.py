@@ -28,7 +28,7 @@ class Joint_State_tf(Node):
         # Create a JointState message
         self.joint_state = JointState()
         self.joint_state.header = msg.header  # Use the same timestamp and frame
-        self.joint_state.name = ['wheel_coupler_joint', 'wheel_coupler_joint_2']
+        self.joint_state.name = ['wheel_left_joint', 'wheel_right_joint']
         # These values would ideally be calculated based on the robot's specific kinematics
         self.joint_state.position = [0., 0.]  # Placeholder values
         self.joint_state.velocity = [msg.twist.twist.linear.x, msg.twist.twist.angular.z]

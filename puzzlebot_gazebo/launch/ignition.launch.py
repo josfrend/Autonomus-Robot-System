@@ -16,7 +16,7 @@ ARGUMENTS = [
     DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
                           description='use_sim_time'),
-    DeclareLaunchArgument('world', default_value='empty',
+    DeclareLaunchArgument('world', default_value='world',
                           description='Ignition World'),
 ]
 
@@ -25,7 +25,7 @@ def generate_launch_description():
 
     # Directories
     pkg_name = get_package_share_directory(
-        'puzzlebot_challenge')
+        'puzzlebot_gazebo')
     # pkg_turtlebot4_ignition_gui_plugins = get_package_share_directory(
     #     'turtlebot4_ignition_gui_plugins')
     # pkg_turtlebot4_description = get_package_share_directory(
@@ -45,13 +45,6 @@ def generate_launch_description():
         value=[
             os.path.join(pkg_name, 'worlds')])
 
-    # ign_gui_plugin_path = SetEnvironmentVariable(
-    #     name='IGN_GUI_PLUGIN_PATH',
-    #     value=[
-    #         os.path.join(pkg_turtlebot4_ignition_gui_plugins, 'lib'), ':' +
-    #         os.path.join(pkg_irobot_create_ignition_plugins, 'lib')])
-
-    # Paths
     ign_gazebo_launch = PathJoinSubstitution(
         [pkg_ros_ign_gazebo, 'launch', 'ign_gazebo.launch.py'])
 
@@ -59,7 +52,7 @@ def generate_launch_description():
     ignition_gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ign_gazebo_launch]),
         launch_arguments=[
-            ('ign_args', [LaunchConfiguration('world'),
+            ('gz_args', [LaunchConfiguration('world'),
                           '.sdf',
                           ' -r',
                           ' -v 4'])

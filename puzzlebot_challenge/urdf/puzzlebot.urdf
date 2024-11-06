@@ -83,6 +83,26 @@
   </link>
 
 
+  <!-- RPLidar Link -->
+  <link name="rplidar_link">
+    <!-- <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.02" rpy="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial> -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.027"/> <!-- Adjusted size for RPLidar -->
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+
+
   <!-- Joints -->
   <joint name="chassis_joint" type="fixed">
     <parent link="base_link"/>
@@ -90,19 +110,67 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
   
-  <joint name="wheel_coupler_joint" type="continuous">
+  <joint name="wheel_left_joint" type="continuous">
     <parent link="chassis"/>
     <child link="left_wheel"/>
     <origin xyz="0.05 0.085 0.05" rpy="0 0 0"/> <!-- Left wheel position -->
     <axis xyz="0 1 0"/>
   </joint>
 
-  <joint name="wheel_coupler_joint_2" type="continuous">
+  <joint name="wheel_right_joint" type="continuous">
     <parent link="chassis"/>
     <child link="right_wheel"/>
     <origin xyz="0.05 -0.085 0.05" rpy="0 0 0"/> <!-- Right wheel position -->
     <axis xyz="0 1 0"/>
+  </joint>  
+
+  <joint name="rplidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="rplidar_link"/>
+    <origin xyz="0.05 0 0.16" rpy="0 0 0"/> <!-- Position RPLidar above chassis -->
   </joint>
+
+  <gazebo>
+    <plugin name="gz::sim::systems::DiffDrive" filename="ignition-gazebo-diff-drive-system">
+      <left_joint>wheel_left_joint</left_joint>
+      <right_joint>wheel_right_joint</right_joint>
+      <wheel_separation>0.19</wheel_separation> <!-- Distance between wheels -->
+      <wheel_radius>0.05</wheel_radius>          <!-- Wheel radius -->
+      <topic>/cmd_vel</topic>                    <!-- Ignition topic for velocity commands -->
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="rplidar_link">
+	<sensor type="gpu_lidar" name="rplidar">
+		<pose>0 0 0 0 0 0</pose>
+		<visualize>true</visualize>
+		<update_rate>10</update_rate>
+		<ray>
+			<scan>
+				<horizontal>
+					<samples>720</samples>
+					<resolution>1</resolution>
+					<min_angle>-3.14159</min_angle>
+					<max_angle>3.14159</max_angle>
+				</horizontal>
+			</scan>
+			<range>
+				<min>0.15</min>
+				<max>6.0</max>
+				<resolution>0.01</resolution>
+			</range>
+			<noise>
+				<type>gaussian</type>
+				<mean>0.0</mean>
+				<stddev>0.01</stddev>
+			</noise>
+		</ray>
+		<plugin name="ignition::gazebo::systems::Sensors" filename="libignition-gazebo-sensors-system.so">
+			<topicName>/scan</topicName>
+			<frameName>rplidar_link</frameName>
+		</plugin>
+	</sensor>
+</gazebo>
 
 
 </robot>

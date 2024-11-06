@@ -10,9 +10,9 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 ARGUMENTS = [
     DeclareLaunchArgument('namespace', default_value='',
                           description='Robot namespace'),
-    DeclareLaunchArgument('rviz', default_value='false',
-                          choices=['true', 'false'], description='Start rviz.'),
-    DeclareLaunchArgument('world', default_value='world',
+    DeclareLaunchArgument('sim', default_value='true',
+                          choices=['true', 'false'], description='Use simulated robot.'),
+    DeclareLaunchArgument('world', default_value='empty',
                           description='Ignition World'),
 ]
 
@@ -23,14 +23,14 @@ for pose_element in ['x', 'y', 'z', 'yaw']:
 
 def generate_launch_description():
     # Directories
-    pkg_name = get_package_share_directory(
-        'puzzlebot_challenge')
+    puzzlebot_gazebo_pkg = get_package_share_directory(
+        'puzzlebot_gazebo')
 
     # Paths
     ignition_launch = PathJoinSubstitution(
-        [pkg_name, 'launch', 'ignition.launch.py'])
+        [puzzlebot_gazebo_pkg, 'launch', 'ignition.launch.py'])
     robot_spawn_launch = PathJoinSubstitution(
-        [pkg_name, 'launch', 'turtlebot4_spawn.launch.py'])
+        [puzzlebot_gazebo_pkg, 'launch', 'puzzlebot_spawn.launch.py'])
 
     ignition = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ignition_launch]),
@@ -43,7 +43,6 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([robot_spawn_launch]),
         launch_arguments=[
             ('namespace', LaunchConfiguration('namespace')),
-            ('rviz', LaunchConfiguration('rviz')),
             ('x', LaunchConfiguration('x')),
             ('y', LaunchConfiguration('y')),
             ('z', LaunchConfiguration('z')),
