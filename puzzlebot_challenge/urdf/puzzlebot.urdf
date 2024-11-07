@@ -32,6 +32,25 @@
         <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_13_Chassis.stl"/>
       </geometry>
     </collision>
+
+    <sensor type="camera" name="camera_sensor">
+      <pose relative_to='camera_frame'>0 0 0 0 0 0</pose>
+      <topic>camera</topic>
+      <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+              <width>1280</width>
+              <height>720</height>
+          </image>
+          <clip>
+              <near>0.1</near>
+              <far>100</far>
+          </clip>
+      </camera>
+      <always_on>1</always_on>
+      <update_rate>10</update_rate>
+      <visualize>false</visualize>
+    </sensor>
   </link>
 
   <!-- Left Wheel -->
@@ -83,23 +102,7 @@
   </link>
 
 
-  <!-- RPLidar Link -->
-  <link name="rplidar_link">
-    <!-- <inertial>
-      <mass value="0.1"/>
-      <origin xyz="0 0 0.02" rpy="0 0 0"/>
-      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
-    </inertial> -->
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="0.035" length="0.027"/> <!-- Adjusted size for RPLidar -->
-      </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 1.0"/>
-      </material>
-    </visual>
-  </link>
+ 
 
 
 
@@ -124,11 +127,7 @@
     <axis xyz="0 1 0"/>
   </joint>  
 
-  <joint name="rplidar_joint" type="fixed">
-    <parent link="chassis"/>
-    <child link="rplidar_link"/>
-    <origin xyz="0.05 0 0.16" rpy="0 0 0"/> <!-- Position RPLidar above chassis -->
-  </joint>
+
 
   <gazebo>
     <plugin name="gz::sim::systems::DiffDrive" filename="ignition-gazebo-diff-drive-system">
@@ -140,37 +139,117 @@
     </plugin>
   </gazebo>
 
+   <!-- RPLidar Link -->
+  <link name="rplidar_link">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.01" rpy="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.027"/> <!-- Adjusted size for RPLidar -->
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="rplidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="rplidar_link"/>
+    <origin xyz="0.05 0 0.16" rpy="0 0 0"/> <!-- Position RPLidar above chassis -->
+  </joint>
+
   <gazebo reference="rplidar_link">
-	<sensor type="gpu_lidar" name="rplidar">
-		<pose>0 0 0 0 0 0</pose>
-		<visualize>true</visualize>
-		<update_rate>10</update_rate>
-		<ray>
-			<scan>
-				<horizontal>
-					<samples>720</samples>
-					<resolution>1</resolution>
-					<min_angle>-3.14159</min_angle>
-					<max_angle>3.14159</max_angle>
-				</horizontal>
-			</scan>
-			<range>
-				<min>0.15</min>
-				<max>6.0</max>
-				<resolution>0.01</resolution>
-			</range>
-			<noise>
-				<type>gaussian</type>
-				<mean>0.0</mean>
-				<stddev>0.01</stddev>
-			</noise>
-		</ray>
-		<plugin name="ignition::gazebo::systems::Sensors" filename="libignition-gazebo-sensors-system.so">
-			<topicName>/scan</topicName>
-			<frameName>rplidar_link</frameName>
-		</plugin>
-	</sensor>
-</gazebo>
+    <sensor name="rplidar" type="gpu_lidar">
+      <pose>0 0 0.0 0 0 0</pose>
+      <topic>scan</topic>
+      <update_rate>2</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.396263</min_angle>
+            <max_angle>1.396263</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>12.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>     
+  </gazebo>
+
+  <!-- <gazebo>
+      <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+          <render_engine>ogre2</render_engine>
+      </plugin>
+  </gazebo> -->
+
+  <link name="camera_link">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.1 0 0.2"/> <!-- Adjust as needed -->
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.04 0.02 0.02"/> <!-- Approximate camera size -->
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera_link"/>
+    <origin xyz="0.1 0 0.1" rpy="0 0 0"/> <!-- Position relative to chassis -->
+  </joint>
+
+  <gazebo reference="camera_link">
+    <sensor name="camera" type="camera">
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>320</width>
+            <height>240</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+        <topic>camera</topic>
+      </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin
+      filename="ignition-gazebo-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo>
+
 
 
 </robot>

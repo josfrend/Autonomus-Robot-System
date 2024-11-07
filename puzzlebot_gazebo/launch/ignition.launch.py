@@ -38,12 +38,13 @@ def generate_launch_description():
     #     'irobot_create_ignition_plugins')
     pkg_ros_ign_gazebo = get_package_share_directory(
         'ros_ign_gazebo')
+    
 
     # Set ignition resource path
     ign_resource_path = SetEnvironmentVariable(
         name='IGN_GAZEBO_RESOURCE_PATH',
         value=[
-            os.path.join(pkg_name, 'worlds')])
+            os.path.join(pkg_name, 'gazebo') + ':' + '/home/alfredo/ros2_ws/src/puzzlebot/puzzlebot_gazebo/gazebo'])
 
     ign_gazebo_launch = PathJoinSubstitution(
         [pkg_ros_ign_gazebo, 'launch', 'ign_gazebo.launch.py'])

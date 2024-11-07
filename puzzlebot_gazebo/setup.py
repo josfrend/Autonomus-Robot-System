@@ -9,7 +9,7 @@ setup(
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
-        ('share/' + package_name + '/worlds', glob('worlds/*.sdf')),
+        ('share/' + package_name + '/gazebo', glob('gazebo/*.sdf')),
         ('share/' + package_name + '/models', glob('models/*.stl')),
         ('share/' + package_name + '/urdf', glob('urdf/*.urdf')),
         ('share/ament_index/resource_index/packages',

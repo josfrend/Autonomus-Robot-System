@@ -107,16 +107,18 @@ def generate_launch_description():
             'use_sim_time': use_sim_time
         }],
         arguments=[
-            ['/world/', world,
-             '/model/', robot_name,
-             '/link/base_link/sensor/rplidar/scan' +
+            # ['/world/', world,
+            #  '/model/', robot_name,
+            #  '/link/base_link/sensor/rplidar/scan' +
+            [ '/scan' +
              '@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan']
         ],
         remappings=[
-            (['/world/', world,
-              '/model/', robot_name,
-              '/link/base_link/sensor/rplidar/scan'],
-             'scan')
+            # (['/world/', world,
+            #   '/model/', robot_name,
+            #   '/link/base_link/sensor/rplidar/scan'],
+                (['/scan'],
+                'scan')
         ]
         )
 
