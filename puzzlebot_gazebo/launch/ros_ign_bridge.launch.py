@@ -88,13 +88,13 @@ def generate_launch_description():
              'diffdrive_controller/cmd_vel_unstamped')
         ])
     
-    odom_bridge_node = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='odom_bridge',
-        output='screen',
-        arguments=['/odom@nav_msgs/msg/Odometry@ignition.msgs.Odometry']
-    )
+    # odom_bridge_node = Node(
+    #     package='ros_gz_bridge',
+    #     executable='parameter_bridge',
+    #     name='odom_bridge',
+    #     output='screen',
+    #     arguments=['/odom@nav_msgs/msg/Odometry@ignition.msgs.Odometry']
+    # )
 
 
     # lidar bridge
@@ -107,20 +107,20 @@ def generate_launch_description():
             'use_sim_time': use_sim_time
         }],
         arguments=[
-            # ['/world/', world,
-            #  '/model/', robot_name,
-            #  '/link/base_link/sensor/rplidar/scan' +
-            [ '/scan' +
+            ['/world/', world,
+             '/model/', robot_name,
+             '/link/base_link/sensor/rplidar/scan' +
              '@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan']
         ],
         remappings=[
-            # (['/world/', world,
-            #   '/model/', robot_name,
-            #   '/link/base_link/sensor/rplidar/scan'],
-                (['/scan'],
+            (['/world/', world,
+              '/model/', robot_name,
+              '/link/base_link/sensor/rplidar/scan'],
                 'scan')
         ]
-        )
+    )
+
+
 
     # Display message bridge
     # hmi_display_msg_bridge = Node(
@@ -182,62 +182,44 @@ def generate_launch_description():
     #     condition=LaunchConfigurationEquals('model', 'standard'))
 
     # Camera sensor bridge
-    # oakd_camera_bridge = Node(
-    #     package='ros_gz_bridge',
-    #     executable='parameter_bridge',
-    #     name='camera_bridge',
-    #     output='screen',
-    #     parameters=[{'use_sim_time': use_sim_time}],
-    #     arguments=[
-    #         ['/world/', world,
-    #          '/model/', robot_name,
-    #          '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/image' +
-    #          '@sensor_msgs/msg/Image' +
-    #          '[ignition.msgs.Image'],
-    #         ['/world/', world,
-    #          '/model/', robot_name,
-    #          '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/depth_image' +
-    #          '@sensor_msgs/msg/Image' +
-    #          '[ignition.msgs.Image'],
-    #         ['/world/', world,
-    #          '/model/', robot_name,
-    #          '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/points' +
-    #          '@sensor_msgs/msg/PointCloud2' +
-    #          '[ignition.msgs.PointCloudPacked'],
-    #         ['/world/', world,
-    #          '/model/', robot_name,
-    #          '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/camera_info' +
-    #          '@sensor_msgs/msg/CameraInfo' +
-    #          '[ignition.msgs.CameraInfo'],
-    #         ],
-    #     remappings=[
-    #         (['/world/', world,
-    #           '/model/', robot_name,
-    #           '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/image'],
-    #          'oakd/rgb/preview/image_raw'),
-    #         (['/world/', world,
-    #           '/model/', robot_name,
-    #           '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/depth_image'],
-    #          'oakd/rgb/preview/depth'),
-    #         (['/world/', world,
-    #           '/model/', robot_name,
-    #           '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/points'],
-    #          'oakd/rgb/preview/depth/points'),
-    #         (['/world/', world,
-    #           '/model/', robot_name,
-    #           '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/camera_info'],
-    #          'oakd/rgb/preview/camera_info')
-    #         ]
-    # )
+    camera_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='camera_bridge',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=[
+            ['/world/', world,
+             '/model/', robot_name,
+             '/link/base_link/sensor/camera/image' +
+             '@sensor_msgs/msg/Image' +
+             '[ignition.msgs.Image'],
+            ['/world/', world,
+             '/model/', robot_name,
+             '/link/base_link/sensor/camera/camera_info' +
+             '@sensor_msgs/msg/CameraInfo' +
+             '[ignition.msgs.CameraInfo'],
+            ],
+        remappings=[
+            (['/world/', world,
+              '/model/', robot_name,
+              '/link/base_link/sensor/camera/image'],
+             '/video_source/raw'),
+            (['/world/', world,
+              '/model/', robot_name,
+              '/link/base_link/sensor/camera/camera_info'],
+             '/camera_info')
+            ]
+    )
 
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(gazebo_simulator)
     ld.add_action(cmd_vel_bridge)
-    ld.add_action(odom_bridge_node)
+    # ld.add_action(odom_bridge_node)
     # ld.add_action(hmi_display_msg_bridge)
     # ld.add_action(hmi_buttons_msg_bridge)
     # ld.add_action(hmi_led_msg_bridge)
     ld.add_action(lidar_bridge)
-    # ld.add_action(oakd_camera_bridge)
+    ld.add_action(camera_bridge)
     return ld

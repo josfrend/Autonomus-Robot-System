@@ -10,6 +10,7 @@ setup(
     data_files=[
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
         ('share/' + package_name + '/gazebo', glob('gazebo/*.sdf')),
+        ('share/' + package_name + '/gazebo/plugins/', glob('gazebo/plugins/*.so')),
         ('share/' + package_name + '/models', glob('models/*.stl')),
         ('share/' + package_name + '/urdf', glob('urdf/*.urdf')),
         ('share/ament_index/resource_index/packages',

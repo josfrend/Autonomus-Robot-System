@@ -3,7 +3,7 @@
 
   <link name="base_link">
     <inertial>
-      <mass value="0.0001"/> <!-- Negligible mass for dummy link -->
+      <mass value="0.0001"/> 
       <origin xyz="0 0 0" />
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
@@ -13,8 +13,8 @@
   <link name="chassis">
   <!-- <pose relative_to='__model__'>0 0 0.05 0 0 0</pose> -->
     <inertial>
-      <mass value="0.9"/> <!-- Chassis mass in kg -->
-      <origin rpy="1.5708 0 1.5708" xyz="0 0 0.05" /> <!-- Centered in chassis, 4.3 cm height / 2 -->
+      <mass value="0.9"/> 
+      <origin rpy="1.5708 0 1.5708" xyz="0 0 0.05" /> 
       <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>
     </inertial>
     <visual>
@@ -56,7 +56,7 @@
   <!-- Left Wheel -->
   <link name="left_wheel">
     <inertial>
-      <mass value="0.0471238898038469"/> <!-- Left wheel mass in kg -->
+      <mass value="0.0471238898038469"/> 
       <origin rpy="0 1.5708 -1.5708" xyz="0.0 0.0 0.0" />
       <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="0.0" izz="0.00001"/>
     </inertial>
@@ -80,7 +80,7 @@
   <!-- Right Wheel -->
   <link name="right_wheel">
     <inertial>
-      <mass value="0.0471238898038469"/> <!-- Right wheel mass in kg -->
+      <mass value="0.0471238898038469"/> 
       <origin rpy="0 -1.5708 -1.5708" xyz="0.0 0.0 0.0" />
       <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00002" iyz="0.0" izz="0.00001"/>
     </inertial>
@@ -116,26 +116,25 @@
   <joint name="wheel_left_joint" type="continuous">
     <parent link="chassis"/>
     <child link="left_wheel"/>
-    <origin xyz="0.05 0.085 0.05" rpy="0 0 0"/> <!-- Left wheel position -->
+    <origin xyz="0.05 0.085 0.05" rpy="0 0 0"/> 
     <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="wheel_right_joint" type="continuous">
     <parent link="chassis"/>
     <child link="right_wheel"/>
-    <origin xyz="0.05 -0.085 0.05" rpy="0 0 0"/> <!-- Right wheel position -->
+    <origin xyz="0.05 -0.085 0.05" rpy="0 0 0"/> 
     <axis xyz="0 1 0"/>
   </joint>  
-
 
 
   <gazebo>
     <plugin name="gz::sim::systems::DiffDrive" filename="ignition-gazebo-diff-drive-system">
       <left_joint>wheel_left_joint</left_joint>
       <right_joint>wheel_right_joint</right_joint>
-      <wheel_separation>0.19</wheel_separation> <!-- Distance between wheels -->
-      <wheel_radius>0.05</wheel_radius>          <!-- Wheel radius -->
-      <topic>/cmd_vel</topic>                    <!-- Ignition topic for velocity commands -->
+      <wheel_separation>0.19</wheel_separation> 
+      <wheel_radius>0.05</wheel_radius>         
+      <topic>/cmd_vel</topic>        
     </plugin>
   </gazebo>
 
@@ -149,7 +148,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.035" length="0.027"/> <!-- Adjusted size for RPLidar -->
+        <cylinder radius="0.035" length="0.027"/>
       </geometry>
       <material name="black">
         <color rgba="0.0 0.0 0.0 1.0"/>
@@ -160,21 +159,20 @@
   <joint name="rplidar_joint" type="fixed">
     <parent link="chassis"/>
     <child link="rplidar_link"/>
-    <origin xyz="0.05 0 0.16" rpy="0 0 0"/> <!-- Position RPLidar above chassis -->
+    <origin xyz="0.05 0 0.16" rpy="0 0 0"/> 
   </joint>
 
   <gazebo reference="rplidar_link">
     <sensor name="rplidar" type="gpu_lidar">
       <pose>0 0 0.0 0 0 0</pose>
-      <topic>scan</topic>
       <update_rate>2</update_rate>
       <ray>
         <scan>
           <horizontal>
             <samples>720</samples>
             <resolution>1</resolution>
-            <min_angle>-1.396263</min_angle>
-            <max_angle>1.396263</max_angle>
+            <min_angle>-3.14</min_angle>
+            <max_angle>3.14</max_angle>
           </horizontal>
           <vertical>
             <samples>1</samples>
@@ -194,21 +192,16 @@
     </sensor>     
   </gazebo>
 
-  <!-- <gazebo>
-      <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
-          <render_engine>ogre2</render_engine>
-      </plugin>
-  </gazebo> -->
 
   <link name="camera_link">
     <inertial>
       <mass value="0.01"/>
-      <origin xyz="0.1 0 0.2"/> <!-- Adjust as needed -->
+      <origin xyz="0.1 0 0.2"/> 
       <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
     </inertial>
     <visual>
       <geometry>
-        <box size="0.04 0.02 0.02"/> <!-- Approximate camera size -->
+        <box size="0.04 0.02 0.02"/> 
       </geometry>
       <material name="gray">
         <color rgba="0.5 0.5 0.5 1.0"/>
@@ -219,7 +212,7 @@
   <joint name="camera_joint" type="fixed">
     <parent link="chassis"/>
     <child link="camera_link"/>
-    <origin xyz="0.1 0 0.1" rpy="0 0 0"/> <!-- Position relative to chassis -->
+    <origin xyz="0.1 0 0.1" rpy="0 0 0"/> 
   </joint>
 
   <gazebo reference="camera_link">
@@ -238,7 +231,6 @@
         <always_on>1</always_on>
         <update_rate>30</update_rate>
         <visualize>true</visualize>
-        <topic>camera</topic>
       </sensor>
   </gazebo>
 

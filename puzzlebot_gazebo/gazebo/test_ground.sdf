@@ -17,6 +17,21 @@
             filename="libignition-gazebo-scene-broadcaster-system.so"
             name="ignition::gazebo::systems::SceneBroadcaster">
         </plugin>
+       
+        <scene>
+            <ambient>1.0 1.0 1.0</ambient>
+            <background>0.8 0.8 0.8</background>
+            <grid>true</grid>
+        </scene>
+
+        <!-- <gui fullscreen="0">
+            <plugin filename="ImageDisplay" name="Image Display">
+                <ignition-gui>
+                <property key="state" type="string">docked</property>
+                </ignition-gui>
+            </plugin>
+        </gui> -->
+
 
         <light type="directional" name="sun">
             <cast_shadows>true</cast_shadows>
@@ -31,6 +46,7 @@
             </attenuation>
             <direction>-0.5 0.1 -0.9</direction>
         </light>
+
 
         <model name="ground_plane">
             <static>true</static>
