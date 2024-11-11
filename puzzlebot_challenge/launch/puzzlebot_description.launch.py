@@ -28,7 +28,7 @@ def generate_launch_description():
     urdf_file = get_package_share_directory('puzzlebot_challenge') + '/urdf/puzzlebot.urdf'#PathJoinSubstitution([pkg_puzzlebot_description,
     #                                    'urdf',
                                     #    'simple.urdf'])
-    rviz_config_path = get_package_share_directory('puzzlebot_challenge') + '/rviz/manipulator.rviz'
+    rviz_config_path = get_package_share_directory('puzzlebot_challenge') + '/rviz/image_puzzlebot.rviz'
     namespace = LaunchConfiguration('namespace')
 
     robot_state_publisher = Node(
@@ -65,11 +65,11 @@ def generate_launch_description():
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        # parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
-        # remappings=[
-        #     ('/tf', 'tf'),
-        #     ('/tf_static', 'tf_static')
-        # ]
+        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
+        ]
     )
 
     pose_sim = Node(
@@ -84,6 +84,12 @@ def generate_launch_description():
             name = 'localisation'
     )
 
+    filter_scan = Node(
+            package = 'puzzlebot_challenge',
+            executable = 'rplidar',
+            name = 'filter_scan'
+    )
+
     # condition=IfCondition(LaunchConfiguration('rviz')),
 
 
@@ -94,6 +100,7 @@ def generate_launch_description():
     ld.add_action(rviz_node)
     ld.add_action(tf2_ros)
     ld.add_action(joint_state_publisher)
-    ld.add_action(pose_sim)
-    ld.add_action(localisation)
+    # ld.add_action(filter_scan)
+    # ld.add_action(pose_sim)
+    # ld.add_action(localisation)
     return ld

@@ -47,10 +47,9 @@ def generate_launch_description():
             os.path.join(pkg_name, 'gazebo') + ':' + '/home/alfredo/ros2_ws/src/puzzlebot/puzzlebot_gazebo/gazebo'])
     
     ign_gui_plugin_path = SetEnvironmentVariable(
-        name='IGN_GAZEBO_PLUGIN_PATH',
+        name='IGN_GAZEBO_SYSTEM_PLUGIN_PATH',
         value=[
-            # os.path.join(pkg_name, 'gazebo'), ':' +
-            os.path.join(pkg_name, 'gazebo/plugins')])
+            os.path.join(pkg_name, 'gazebo/plugins'), ':' + '$IGN_GAZEBO_SYSTEM_PLUGIN_PATH'])
 
     ign_gazebo_launch = PathJoinSubstitution(
         [pkg_ros_ign_gazebo, 'launch', 'ign_gazebo.launch.py'])

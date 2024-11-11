@@ -88,13 +88,13 @@ def generate_launch_description():
              'diffdrive_controller/cmd_vel_unstamped')
         ])
     
-    # odom_bridge_node = Node(
-    #     package='ros_gz_bridge',
-    #     executable='parameter_bridge',
-    #     name='odom_bridge',
-    #     output='screen',
-    #     arguments=['/odom@nav_msgs/msg/Odometry@ignition.msgs.Odometry']
-    # )
+    odom_bridge_node = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='odom_bridge',
+        output='screen',
+        arguments=['/odom@nav_msgs/msg/Odometry@ignition.msgs.Odometry']
+    )
 
 
     # lidar bridge
@@ -216,7 +216,7 @@ def generate_launch_description():
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(gazebo_simulator)
     ld.add_action(cmd_vel_bridge)
-    # ld.add_action(odom_bridge_node)
+    ld.add_action(odom_bridge_node)
     # ld.add_action(hmi_display_msg_bridge)
     # ld.add_action(hmi_buttons_msg_bridge)
     # ld.add_action(hmi_led_msg_bridge)

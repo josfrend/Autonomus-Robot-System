@@ -63,6 +63,7 @@ class ScanFilter(Node):
 
 		# Substitute in the new ranges in the original message, and republish it
 		msg.ranges = new_ranges
+		msg.header.frame_id = 'rplidar_link'
 		self.pub.publish(msg)
 		# Find minimum and maximum range values
 		min_range = min(msg.ranges)

@@ -77,8 +77,10 @@ class ArUco_tracker(Node):
         self.width = cv_image.shape[1]
         
         # The commands may vary depending on the openCV version used
+        # arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        # arucoParams = cv2.aruco.DetectorParameters()
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-        arucoParams = cv2.aruco.DetectorParameters()
+        arucoParams = cv2.aruco.DetectorParameters_create()
 
         (corners, ids, rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
         
@@ -123,7 +125,7 @@ class ArUco_tracker(Node):
                 aruco_info = Arucoinfo()
                 aruco_info.tag = str(i)
                 aruco_info.id = str(ids[i][0])
-                aruco_info.point.header.frame_id = 'puzzlebot'
+                aruco_info.point.header.frame_id = 'camera_link'
                 aruco_info.point.point.x = x_3d
                 aruco_info.point.point.y = y_3d
                 aruco_info.point.point.z = z_3d - 0.12

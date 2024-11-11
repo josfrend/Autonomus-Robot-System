@@ -127,6 +127,32 @@
     <axis xyz="0 1 0"/>
   </joint>  
 
+  <!-- <gazebo>
+    <plugin name="DiffDynamicPlugin" filename="libDiffDynamicPlugin.so">
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <cmd_R_topic>VelocitySetR</cmd_R_topic>
+      <cmd_L_topic>VelocitySetL</cmd_L_topic>
+      <cmd_vel_topic>cmd_vel</cmd_vel_topic>
+      <enc_R_topic>VelocityEncR</enc_R_topic>
+      <enc_L_topic>VelocityEncL</enc_L_topic>
+      <robot_vel_topic>robot_vel</robot_vel_topic>
+      <mot_Vmax>5</mot_Vmax>
+      <mot_J>0.0005</mot_J>
+      <mot_R>2</mot_R>
+      <mot_L>0.01</mot_L>
+      <mot_K>0.01</mot_K>
+      <mot_b>0.00001</mot_b>
+      <mot_gear>34</mot_gear>
+      <robot_width>0.18</robot_width>
+      <wheel_radius>0.05</wheel_radius>
+      <pid_Kp>0.1</pid_Kp>
+      <pid_Ti>0.05</pid_Ti>
+      <pid_Td>0</pid_Td>
+      <input_type>2</input_type>
+      <rate>100</rate>
+    </plugin>
+  </gazebo> -->
 
   <gazebo>
     <plugin name="gz::sim::systems::DiffDrive" filename="ignition-gazebo-diff-drive-system">
@@ -134,7 +160,8 @@
       <right_joint>wheel_right_joint</right_joint>
       <wheel_separation>0.19</wheel_separation> 
       <wheel_radius>0.05</wheel_radius>         
-      <topic>/cmd_vel</topic>        
+      <topic>/cmd_vel</topic>  
+      <odom_topic>/odom</odom_topic>      
     </plugin>
   </gazebo>
 
@@ -239,6 +266,7 @@
       filename="ignition-gazebo-sensors-system"
       name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
+      <frame_id>laser_link</frame_id>
     </plugin>
   </gazebo>
 
