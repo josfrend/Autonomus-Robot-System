@@ -7,6 +7,8 @@
   <maintainer email="josfrend17@gmail.com">alfredo</maintainer>
   <license>Apache-2.0</license>
 
+  <depend>puzzlebot_challenge</depend>
+
   <!-- ROS IGN -->
   <depend>gazebo_ros</depend>
   <depend>ros_ign_interfaces</depend>

@@ -31,6 +31,10 @@ def generate_launch_description():
 
     puzzlebot_gazebo_pkg = get_package_share_directory(
         'puzzlebot_gazebo')
+    
+    puzzlebot_description_pkg = get_package_share_directory(
+        'puzzlebot_challenge'
+    )
 
     leds = [
         'power',
@@ -57,44 +61,38 @@ def generate_launch_description():
     #         ('world', world)
     #     ]
     # )
-    puzzlebot_ign_launch = PathJoinSubstitution(
+
+    puzzlebot_description_launch = PathJoinSubstitution(
+        [puzzlebot_description_pkg, 'launch', 'puzzlebot_description.launch.py']
+    )
+
+    puzzlebot_gz_launch = PathJoinSubstitution(
         [puzzlebot_gazebo_pkg, 'launch', 'puzzlebot_ignition.launch.py']
     )
 
+    puzzlebot_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([puzzlebot_description_launch])
+    )
+
     gazebo_simulator = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([puzzlebot_ign_launch]),
+        PythonLaunchDescriptionSource([puzzlebot_gz_launch]),
         launch_arguments=[
             ('namespace', namespace),
             ('world', world)
         ]
     )
 
-    # cmd_vel bridge
-    cmd_vel_bridge = Node(
+    bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        name='cmd_vel_bridge',
-        output='screen',
-        parameters=[{
-            'use_sim_time': use_sim_time
-        }],
-        arguments=[
-            [namespace,
-             '/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist']
-        ],
-        remappings=[
-            ([namespace, '/cmd_vel'], 'cmd_vel'),
-            (['/model/', robot_name, '/cmd_vel'],
-             'diffdrive_controller/cmd_vel_unstamped')
-        ])
-    
-    odom_bridge_node = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='odom_bridge',
-        output='screen',
-        arguments=['/odom@nav_msgs/msg/Odometry@ignition.msgs.Odometry']
+        name='gz_robot_bridge',
+        arguments=['/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+                   '/VelocityEncR@std_msgs/msg/Float32[gz.msgs.Float',
+                   '/VelocityEncL@std_msgs/msg/Float32[gz.msgs.Float'
+                  ],
+        output='screen'
     )
+    
 
 
     # lidar bridge
@@ -119,67 +117,6 @@ def generate_launch_description():
                 'scan')
         ]
     )
-
-
-
-    # Display message bridge
-    # hmi_display_msg_bridge = Node(
-    #     package='ros_gz_bridge',
-    #     executable='parameter_bridge',
-    #     name='hmi_display_msg_bridge',
-    #     output='screen',
-    #     parameters=[{'use_sim_time': use_sim_time}],
-    #     arguments=[
-    #         [namespace, '/hmi/display/raw' +
-    #          '@std_msgs/msg/String' +
-    #          ']ignition.msgs.StringMsg'],
-    #         [namespace, '/hmi/display/selected' +
-    #          '@std_msgs/msg/Int32' +
-    #          ']ignition.msgs.Int32']
-    #     ],
-    #     remappings=[
-    #         ([namespace, '/hmi/display/raw'],
-    #          'hmi/display/_raw'),
-    #         ([namespace, '/hmi/display/selected'],
-    #          'hmi/display/_selected')
-    #     ],
-    #     condition=LaunchConfigurationEquals('model', 'standard'))
-
-    # Buttons message bridge
-    # hmi_buttons_msg_bridge = Node(
-    #     package='ros_gz_bridge',
-    #     executable='parameter_bridge',
-    #     name='hmi_buttons_msg_bridge',
-    #     output='screen',
-    #     parameters=[{'use_sim_time': use_sim_time}],
-    #     arguments=[
-    #         [namespace, '/hmi/buttons' +
-    #          '@std_msgs/msg/Int32' +
-    #          '[ignition.msgs.Int32']
-    #     ],
-    #     remappings=[
-    #         ([namespace, '/hmi/buttons'],
-    #          'hmi/buttons/_set')
-    #     ],
-    #     condition=LaunchConfigurationEquals('model', 'standard'))
-
-    # Buttons message bridge
-    # hmi_led_msg_bridge = Node(
-    #     package='ros_gz_bridge',
-    #     executable='parameter_bridge',
-    #     name='hmi_led_msg_bridge',
-    #     output='screen',
-    #     parameters=[{'use_sim_time': use_sim_time}],
-    #     arguments=[
-    #         [namespace, '/hmi/led/' + led +
-    #          '@std_msgs/msg/Int32' +
-    #          ']ignition.msgs.Int32'] for led in leds
-    #     ],
-    #     remappings=[
-    #         ([namespace, '/hmi/led/' + led],
-    #          'hmi/led/_' + led) for led in leds
-    #     ],
-    #     condition=LaunchConfigurationEquals('model', 'standard'))
 
     # Camera sensor bridge
     camera_bridge = Node(
@@ -214,12 +151,9 @@ def generate_launch_description():
 
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(puzzlebot_description)
     ld.add_action(gazebo_simulator)
-    ld.add_action(cmd_vel_bridge)
-    ld.add_action(odom_bridge_node)
-    # ld.add_action(hmi_display_msg_bridge)
-    # ld.add_action(hmi_buttons_msg_bridge)
-    # ld.add_action(hmi_led_msg_bridge)
+    ld.add_action(bridge)
     ld.add_action(lidar_bridge)
     ld.add_action(camera_bridge)
     return ld

@@ -98,9 +98,9 @@ def generate_launch_description():
     # Add nodes to LaunchDescription
     ld.add_action(robot_state_publisher)
     ld.add_action(rviz_node)
-    ld.add_action(tf2_ros)
+    # ld.add_action(tf2_ros)
     ld.add_action(joint_state_publisher)
     # ld.add_action(filter_scan)
     # ld.add_action(pose_sim)
-    # ld.add_action(localisation)
+    ld.add_action(localisation)
     return ld

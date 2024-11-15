@@ -33,24 +33,6 @@
       </geometry>
     </collision>
 
-    <sensor type="camera" name="camera_sensor">
-      <pose relative_to='camera_frame'>0 0 0 0 0 0</pose>
-      <topic>camera</topic>
-      <camera>
-          <horizontal_fov>1.047</horizontal_fov>
-          <image>
-              <width>1280</width>
-              <height>720</height>
-          </image>
-          <clip>
-              <near>0.1</near>
-              <far>100</far>
-          </clip>
-      </camera>
-      <always_on>1</always_on>
-      <update_rate>10</update_rate>
-      <visualize>false</visualize>
-    </sensor>
   </link>
 
   <!-- Left Wheel -->
@@ -127,7 +109,7 @@
     <axis xyz="0 1 0"/>
   </joint>  
 
-  <!-- <gazebo>
+  <gazebo>
     <plugin name="DiffDynamicPlugin" filename="libDiffDynamicPlugin.so">
       <leftJoint>wheel_left_joint</leftJoint>
       <rightJoint>wheel_right_joint</rightJoint>
@@ -149,21 +131,11 @@
       <pid_Kp>0.1</pid_Kp>
       <pid_Ti>0.05</pid_Ti>
       <pid_Td>0</pid_Td>
-      <input_type>2</input_type>
+      <input_type>1</input_type>
       <rate>100</rate>
     </plugin>
-  </gazebo> -->
-
-  <gazebo>
-    <plugin name="gz::sim::systems::DiffDrive" filename="ignition-gazebo-diff-drive-system">
-      <left_joint>wheel_left_joint</left_joint>
-      <right_joint>wheel_right_joint</right_joint>
-      <wheel_separation>0.19</wheel_separation> 
-      <wheel_radius>0.05</wheel_radius>         
-      <topic>/cmd_vel</topic>  
-      <odom_topic>/odom</odom_topic>      
-    </plugin>
   </gazebo>
+
 
    <!-- RPLidar Link -->
   <link name="rplidar_link">
@@ -247,26 +219,25 @@
         <camera>
           <horizontal_fov>1.047</horizontal_fov>
           <image>
-            <width>320</width>
-            <height>240</height>
+              <width>1280</width>
+              <height>720</height>
           </image>
           <clip>
-            <near>0.1</near>
-            <far>100</far>
+              <near>0.1</near>
+              <far>100</far>
           </clip>
         </camera>
         <always_on>1</always_on>
-        <update_rate>30</update_rate>
-        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <visualize>false</visualize>
       </sensor>
   </gazebo>
 
   <gazebo>
     <plugin
-      filename="ignition-gazebo-sensors-system"
+      filename="gz-sim-sensors-system"
       name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
-      <frame_id>laser_link</frame_id>
     </plugin>
   </gazebo>
 

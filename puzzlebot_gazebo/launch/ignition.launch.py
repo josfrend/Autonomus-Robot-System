@@ -16,7 +16,7 @@ ARGUMENTS = [
     DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
                           description='use_sim_time'),
-    DeclareLaunchArgument('world', default_value='world',
+    DeclareLaunchArgument('world', default_value='test_ground',
                           description='Ignition World'),
 ]
 
@@ -24,8 +24,11 @@ ARGUMENTS = [
 def generate_launch_description():
 
     # Directories
-    pkg_name = get_package_share_directory(
+    pkg_gazebo = get_package_share_directory(
         'puzzlebot_gazebo')
+    pkg_description = get_package_share_directory(
+        'puzzlebot_challenge'
+    )
     # pkg_turtlebot4_ignition_gui_plugins = get_package_share_directory(
     #     'turtlebot4_ignition_gui_plugins')
     # pkg_turtlebot4_description = get_package_share_directory(
@@ -37,22 +40,25 @@ def generate_launch_description():
     # pkg_irobot_create_ignition_plugins = get_package_share_directory(
     #     'irobot_create_ignition_plugins')
     pkg_ros_ign_gazebo = get_package_share_directory(
-        'ros_ign_gazebo')
+        'ros_gz_sim')
     
 
     # Set ignition resource path
     ign_resource_path = SetEnvironmentVariable(
-        name='IGN_GAZEBO_RESOURCE_PATH',
+        name='GZ_SIM_RESOURCE_PATH',
         value=[
-            os.path.join(pkg_name, 'gazebo') + ':' + '/home/alfredo/ros2_ws/src/puzzlebot/puzzlebot_gazebo/gazebo'])
+            os.path.join(pkg_gazebo, 'gazebo') + ':' + 
+            '/home/alfredo/ros2_ws/src/puzzlebot/puzzlebot_gazebo/gazebo' + ':' +
+            '/home/alfredo/ros2_ws/src/puzzlebot' + ':' +
+            '$GZ_SIM_RESOURCE_PATH'])
     
     ign_gui_plugin_path = SetEnvironmentVariable(
-        name='IGN_GAZEBO_SYSTEM_PLUGIN_PATH',
+        name='GZ_SIM_SYSTEM_PLUGIN_PATH',
         value=[
-            os.path.join(pkg_name, 'gazebo/plugins'), ':' + '$IGN_GAZEBO_SYSTEM_PLUGIN_PATH'])
+            os.path.join(pkg_gazebo, 'gazebo/plugins'), ':' + '$GZ_SIM_SYSTEM_PLUGIN_PATH'])
 
     ign_gazebo_launch = PathJoinSubstitution(
-        [pkg_ros_ign_gazebo, 'launch', 'ign_gazebo.launch.py'])
+        [pkg_ros_ign_gazebo, 'launch', 'gz_sim.launch.py'])
 
     # Ignition gazebo
     ignition_gazebo = IncludeLaunchDescription(
