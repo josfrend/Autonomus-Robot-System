@@ -38,12 +38,12 @@ class Localisation(Node):
         self.positiony = 0.0
 
         # Known landmarks for Kalman Filter
-        self.landmark_true = {"0":[1.0, 0.0], "1": [0.9, 0.4], "3": [3.14, 2.17], "7":[1.72, 1.1]}
+        self.landmark_true = {"0":[1.0, 0.0], "1": [0.5, 0.1], "2": [0.0, 1.0], "7":[1.72, 1.1]}
 
         # Initialize varibles for measured landmarks
         self.measured_landmarks = LandmarkList()
         self.measured_landmarks.landmarks = []
-        self.cube_id = '2'
+        self.cube_id = '8'
 
         # Initialize subscribers for wheel velocities and markers information
         self.sub_wl = self.create_subscription(Float32, '/VelocityEncL', self.cbWl, qos_profile_sensor_data)
@@ -88,7 +88,7 @@ class Localisation(Node):
         if self.aruco_info.length != 0:
             for aruco in self.aruco_info.aruco_array:
                 # If marker id in landmarks, save marker info
-                if aruco.id != self.cube_id and aruco.id in np.array(['0', '1', '3', '7']): 
+                if aruco.id != self.cube_id and aruco.id in np.array(['0', '1', '2', '3']): 
                     landmark = Landmark()
                     landmark.id = aruco.id
                     landmark.x, landmark.y = self.transform_cube_position(aruco.point.point)

@@ -38,6 +38,9 @@ if [ ! -d ~/ros2_ws ]; then
     echo "Creating ROS 2 workspace..."
     source /opt/ros/humble/setup.bash
     mkdir -p ~/ros2_ws/src
+    if [ ! -d ~/ros2_ws/src/Autonomus-Robot-System ]; then
+        mv ../Autonomus-Robot-System ~/ros2_ws/src
+    fi
     cd ~/ros2_ws
     rosdep install -i --from-path src --rosdistro humble -y
     colcon build
@@ -46,7 +49,13 @@ if [ ! -d ~/ros2_ws ]; then
     echo "ROS 2 workspace created."
 else
     echo "ROS 2 workspace already exists."
+    if [ ! -d ~/ros2_ws/src/Autonomus-Robot-System ]; then
+        mv ../Autonomus-Robot-System ~/ros2_ws/src
+    fi
 fi
+
+
+
 
 # Additional libraries installation
 echo "Installing tf transformations"
@@ -79,3 +88,14 @@ echo "Finished installing Slam Toolbox"
 echo "Installing Nav2 missing packages"
 sudo apt install -y ros-humble-nav2-bringup
 echo "Installation completed."
+
+sudo apt-get update
+sudo apt-get install lsb-release curl gnupg
+sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+sudo apt-get update
+sudo apt-get install gz-garden
+sudo apt-get install ros-humble-ros-gzgarden
+cd ~/ros2_ws/
+colcon build
+

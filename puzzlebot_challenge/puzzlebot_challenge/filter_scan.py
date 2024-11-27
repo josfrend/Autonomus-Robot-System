@@ -71,7 +71,7 @@ class ScanFilter(Node):
 		max_range = max(msg.ranges)
 
 		# Create a logger to check the ranges in the terminal
-		self.get_logger().info("Minimum range: {} meters and index: {},length: {}, Maximum range: {} meters".format(min_range, min_index, len(msg.ranges), max_range))
+		# self.get_logger().info("Minimum range: {} meters and index: {},length: {}, Maximum range: {} meters".format(min_range, min_index, len(msg.ranges), max_range))
 
 
 def main(args=None):

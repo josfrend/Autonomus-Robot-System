@@ -4,7 +4,7 @@
     <static>true</static>
     
         <link name='link0'>
-            <pose>0 0 0 0 0 3.1415</pose>
+            <pose>0 0 0 3.1415 0 3.1415</pose>
                         
             <visual name='visual'>
                 <geometry>
@@ -18,7 +18,7 @@
                 <pose>0 0 0 0 0 0</pose>
                 <geometry>
                     <box>
-                        <size>0.01 0.2 0.2</size>
+                        <size>0.001 0.04 0.04</size>
                     </box>
                 </geometry>
             </collision>

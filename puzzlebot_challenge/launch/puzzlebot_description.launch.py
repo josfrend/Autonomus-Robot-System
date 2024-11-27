@@ -81,13 +81,15 @@ def generate_launch_description():
     localisation = Node(
             package = 'puzzlebot_challenge',
             executable = 'odometry',
-            name = 'localisation'
+            name = 'localisation',
+            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     filter_scan = Node(
             package = 'puzzlebot_challenge',
             executable = 'rplidar',
-            name = 'filter_scan'
+            name = 'filter_scan',
+            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
     # condition=IfCondition(LaunchConfiguration('rviz')),
@@ -100,7 +102,7 @@ def generate_launch_description():
     ld.add_action(rviz_node)
     # ld.add_action(tf2_ros)
     ld.add_action(joint_state_publisher)
-    # ld.add_action(filter_scan)
+    ld.add_action(filter_scan)
     # ld.add_action(pose_sim)
     ld.add_action(localisation)
     return ld
