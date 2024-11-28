@@ -38,12 +38,12 @@ class Localisation(Node):
         self.positiony = 0.0
 
         # Known landmarks for Kalman Filter
-        self.landmark_true = {"0":[1.0, 0.0], "1": [0.5, 0.1], "2": [0.0, 1.0], "7":[1.72, 1.1]}
+        self.landmark_true = {"1":[3.0, 2.3], "2": [3.0, 2.1], "3": [3.0, 1.9], "4":[1.0, 0.4]}
 
         # Initialize varibles for measured landmarks
         self.measured_landmarks = LandmarkList()
         self.measured_landmarks.landmarks = []
-        self.cube_id = '8'
+        self.cube_id = '0'
 
         # Initialize subscribers for wheel velocities and markers information
         self.sub_wl = self.create_subscription(Float32, '/VelocityEncL', self.cbWl, qos_profile_sensor_data)
@@ -127,6 +127,8 @@ class Localisation(Node):
         """
 
         u_estimation = np.array([[self.positionx],[self.positiony],[self.angle]])
+
+        self.get_logger().info(f'Current landmark: {self.measured_landmarks.landmarks[0].id}')
 
         # Position differential of landmark from current position estimation
         x_diff = self.landmark_true[self.measured_landmarks.landmarks[0].id][0] - self.positionx
