@@ -207,7 +207,7 @@ class RobotControl(Node):
             
         elif self.current_state is StateMachine.GO_TO_TARGET:
             if self.aruco_info.length > 0 and self.carga == False:
-                if self.aruco_info.aruco_array[0].id == self.cube_id and self.aruco_info.aruco_array[0].point.point.z < 0.5:
+                if self.aruco_info.aruco_array[0].id == self.cube_id and self.aruco_info.aruco_array[0].point.point.z < 0.55:
                     stop_spin_msg = Twist()
                     self.velocity_pub.publish(stop_spin_msg)
                     self.handle_pub.publish(Int32(data=0))

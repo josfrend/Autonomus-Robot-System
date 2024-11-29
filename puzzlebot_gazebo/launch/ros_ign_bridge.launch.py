@@ -17,7 +17,7 @@ ARGUMENTS = [
                           description='Ignition model name'),
     DeclareLaunchArgument('namespace', default_value='',
                           description='Robot namespace'),
-    DeclareLaunchArgument('world', default_value='test_ground',
+    DeclareLaunchArgument('world', default_value='simple_world',
                           description='World name'),
 ]
 
@@ -67,7 +67,7 @@ def generate_launch_description():
     )
 
     puzzlebot_gz_launch = PathJoinSubstitution(
-        [puzzlebot_gazebo_pkg, 'launch', 'puzzlebot_ignition.launch.py']
+        [puzzlebot_gazebo_pkg, 'launch', 'ignition.launch.py']
     )
 
     puzzlebot_description = IncludeLaunchDescription(
@@ -77,7 +77,7 @@ def generate_launch_description():
     gazebo_simulator = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([puzzlebot_gz_launch]),
         launch_arguments=[
-            ('namespace', namespace),
+            # ('namespace', namespace),
             ('world', world)
         ]
     )
@@ -107,13 +107,13 @@ def generate_launch_description():
         arguments=[
             ['/world/', world,
              '/model/', robot_name,
-             '/link/base_link/sensor/rplidar/scan' +
+             '/link/chassis/sensor/rplidar/scan' +
              '@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan']
         ],
         remappings=[
             (['/world/', world,
               '/model/', robot_name,
-              '/link/base_link/sensor/rplidar/scan'],
+              '/link/chassis/sensor/rplidar/scan'],
                 'scan')
         ]
     )
@@ -128,23 +128,23 @@ def generate_launch_description():
         arguments=[
             ['/world/', world,
              '/model/', robot_name,
-             '/link/base_link/sensor/camera/image' +
+             '/link/chassis/sensor/camera/image' +
              '@sensor_msgs/msg/Image' +
              '[ignition.msgs.Image'],
             ['/world/', world,
              '/model/', robot_name,
-             '/link/base_link/sensor/camera/camera_info' +
+             '/link/chassis/sensor/camera/camera_info' +
              '@sensor_msgs/msg/CameraInfo' +
              '[ignition.msgs.CameraInfo'],
             ],
         remappings=[
             (['/world/', world,
               '/model/', robot_name,
-              '/link/base_link/sensor/camera/image'],
+              '/link/chassis/sensor/camera/image'],
              '/video_source/raw'),
             (['/world/', world,
               '/model/', robot_name,
-              '/link/base_link/sensor/camera/camera_info'],
+              '/link/chassis/sensor/camera/camera_info'],
              '/camera_info')
             ]
     )

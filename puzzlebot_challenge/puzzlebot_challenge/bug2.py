@@ -75,7 +75,7 @@ class Bug2Controller(Node):
         # Initialize subscribers for odometry, goal, laser scan data and node activation stream
         self.create_subscription( Odometry, '/odom', self.odom_callback, 1)
         self.create_subscription( PoseStamped, '/goal', self.goal_callback, 1)
-        self.create_subscription( LaserScan, '/filtered_scan', self.scan_callback, 1)
+        self.create_subscription( LaserScan, '/scan', self.scan_callback, 1)
         self.create_subscription( Bool, '/bug2_run', self.run, 1)
 
     def wrap_to_pi(self, angle):

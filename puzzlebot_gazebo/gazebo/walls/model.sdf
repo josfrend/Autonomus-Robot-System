@@ -9,16 +9,22 @@
             <visual name='visual'>
                 <geometry>
                     <box>
-                        <size>0.2 0.4 0.5</size>
+                        <size>0.1 4.0 0.5</size>
                     </box>
                 </geometry>
+                <material>
+                    <ambient>1 1 1 1</ambient>
+                    <diffuse>1 1 1 1</diffuse>
+                    <specular>0.5 0.5 0.5 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
             </visual>
             
             <collision name='collision'>
                 <pose>0 0 0 0 0 0</pose>
                 <geometry>
                     <box>
-                        <size>0.2 0.4 0.5</size>
+                        <size>0.1 4.0 0.5</size>
                     </box>
                 </geometry>
             </collision>

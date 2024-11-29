@@ -56,7 +56,7 @@ class ScanFilter(Node):
 		angles = linspace(msg.angle_min, msg.angle_max, len(msg.ranges))
 
 		# Work out the y coordinates of the ranges
-		points = [r * sin(theta) if (theta < -1.0 or theta > 1.0) else inf for r,theta in zip(msg.ranges, angles)]
+		points = [r * sin(theta) if (theta < -1.6 or theta > 1.0) else inf for r,theta in zip(msg.ranges, angles)]
 
 		# If we're close to the x axis, keep the range, otherwise use inf, which means "no return"
 		new_ranges = [r if abs(y) < self.extent else inf for r,y in zip(msg.ranges, points)]
@@ -66,8 +66,9 @@ class ScanFilter(Node):
 		msg.header.frame_id = 'rplidar_link'
 		self.pub.publish(msg)
 		# Find minimum and maximum range values
-		min_range = min(msg.ranges)
 		min_index = np.argmin(msg.ranges)
+		# self.get_logger().info(f'{min_index}')
+		min_range = min(msg.ranges)
 		max_range = max(msg.ranges)
 
 		# Create a logger to check the ranges in the terminal
