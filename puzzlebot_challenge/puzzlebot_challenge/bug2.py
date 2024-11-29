@@ -75,7 +75,7 @@ class Bug2Controller(Node):
         # Initialize subscribers for odometry, goal, laser scan data and node activation stream
         self.create_subscription( Odometry, '/odom', self.odom_callback, 1)
         self.create_subscription( PoseStamped, '/goal', self.goal_callback, 1)
-        self.create_subscription( LaserScan, '/filtered_scan', self.scan_callback, 1)
+        self.create_subscription( LaserScan, '/scan', self.scan_callback, 1)
         self.create_subscription( Bool, '/bug2_run', self.run, 1)
 
     def wrap_to_pi(self, angle):
@@ -109,6 +109,7 @@ class Bug2Controller(Node):
         # Rotate the robot towards the goal if the angle error is significant
         if np.fabs(angle_error) > np.pi/180:
             self.cmd_vel.angular.z = 0.05 if angle_error > 0 else -0.05
+            self.cmd_vel.linear.x = 0.0
         else:
             self.cmd_vel.angular.z = 0.0
             self.current_state = StateMachine.FOLLOW_LINE  # Switch to FOLLOW_LINE state
@@ -127,7 +128,7 @@ class Bug2Controller(Node):
             self.hitpoint = self.current_pose.pose.position  # Record the hitpoint
             self.current_state = StateMachine.FOLLOW_WALL  # Switch to FOLLOW_WALL state
         else:
-            self.cmd_vel.linear.x = 0.05
+            self.cmd_vel.linear.x = 0.1
             self.cmd_vel.angular.z = 0.0
 
         self.cmd_vel_pub.publish(self.cmd_vel)  # Publish the velocity command

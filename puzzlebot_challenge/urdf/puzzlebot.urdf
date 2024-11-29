@@ -1,34 +1,29 @@
 <?xml version="1.0"?>
-<robot name="PuzzleBot">
-  <!-- Base link -->
+<robot name="puzzlebot">
+
   <link name="base_link">
-    <visual>
+    <inertial>
+      <mass value="0.0001"/> 
       <origin xyz="0 0 0" />
-      <geometry>
-        <box size="0 0 0"/>  <!-- Considera especificar las dimensiones -->
-      </geometry>
-    </visual>
-  </link>
-  
-  <!-- Base_Footprint Link -->
-  <joint name="base_footprint_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_footprint"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    </joint>
-
-  <link name="base_footprint">
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+    </inertial>
   </link>
 
-  <!-- Chassis link -->
+  <!-- Chassis -->
   <link name="chassis">
+  <!-- <pose relative_to='__model__'>0 0 0.05 0 0 0</pose> -->
+    <inertial>
+      <mass value="0.8"/> 
+      <origin rpy="1.5708 0 1.5708" xyz="0 0 0.05" /> 
+      <inertia ixx="0.004" ixy="0.0" ixz="0.0" iyy="0.004" iyz="0.0" izz="0.004"/>
+    </inertial>
     <visual>
       <origin rpy="1.5708 0 1.5708" xyz="0 0 0.05" />
       <geometry>
         <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_13_Chassis.stl"/>
       </geometry>
       <material name="white">
-        <color rgba="1 1 1 1"/>  <!-- Color blanco -->
+        <color rgba="1.0 1.0 1.0 1.0"/>
       </material>
     </visual>
     <collision>
@@ -37,33 +32,73 @@
         <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_13_Chassis.stl"/>
       </geometry>
     </collision>
+
   </link>
 
-  <!-- Wheel Coupler link -->
-  <link name="wheel_coupler">
+  <!-- Left Wheel -->
+  <link name="left_wheel">
+    <inertial>
+      <mass value="0.05"/> 
+      <origin rpy="0 1.5708 -1.5708" xyz="0.0 0.0 0.0" />
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>
+    </inertial>
     <visual>
-      <origin rpy="0 1.5708 -1.5708" xyz="0.05 0.085 0.05" />
+      <origin rpy="0 1.5708 -1.5708" xyz="0.0 0.0 0.0"/>
       <geometry>
         <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_1_1_Wheel_Coupler_2.stl"/>
       </geometry>
       <material name="black">
-        <color rgba="0 0 0 1"/>  <!-- Color negro -->
+        <color rgba="0 0 0 1.0"/>
       </material>
     </visual>
+    <collision>
+      <origin rpy="0 1.5708 -1.5708" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_1_1_Wheel_Coupler_2.stl"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>1.0</mu>
+            <mu2>1.0</mu2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
   </link>
 
-  <!-- Wheel Coupler 2 link -->
-  <link name="wheel_coupler_2">
+  <!-- Right Wheel -->
+  <link name="right_wheel">
+    <inertial>
+      <mass value="0.05"/> 
+      <origin rpy="0 -1.5708 -1.5708" xyz="0.0 0.0 0.0" />
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>
+    </inertial>
     <visual>
-      <origin rpy="0 -1.5708 -1.5708" xyz="0.05 -0.085 0.05" />
+      <origin rpy="0 -1.5708 -1.5708" xyz="0.0 0.0 0.0"/>
       <geometry>
         <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_1_1_Wheel_Coupler_2.stl"/>
       </geometry>
       <material name="black">
-        <color rgba="0 0 0 1"/>  <!-- Color negro -->
+        <color rgba="0 0 0 1.0"/>
       </material>
     </visual>
+    <collision>
+      <origin rpy="0 -1.5708 -1.5708" xyz="0.0 0.0 0.0" />
+      <geometry>
+        <mesh filename="package://puzzlebot_challenge/models/MCR2_1000_1_1_Wheel_Coupler_2.stl"/>
+      </geometry>
+      <surface>
+        <friction>
+          <ode>
+            <mu>1.0</mu>
+            <mu2>1.0</mu2>
+          </ode>
+        </friction>
+      </surface>
+    </collision>
   </link>
+
 
   <!-- Joints -->
   <joint name="chassis_joint" type="fixed">
@@ -71,19 +106,157 @@
     <child link="chassis"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
-
-  <joint name="wheel_coupler_joint" type="continuous">
-    <parent link="chassis"/>
-    <child link="wheel_coupler"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <axis xyz="0 1 0" rpy="0 0 0" />
-  </joint>
   
-  <joint name="wheel_coupler_joint_2" type="continuous">
+  <joint name="wheel_left_joint" type="revolute">
     <parent link="chassis"/>
-    <child link="wheel_coupler_2"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <axis xyz="0 1 0" rpy="0 0 0" />
+    <child link="left_wheel"/>
+    <origin xyz="0.05 0.09 0.05" rpy="0 0 0"/> 
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.79769e+308" upper="1.79769e+308" effort="1" velocity="6"/>
+    <dynamics friction="0.1"/>
   </joint>
->
+
+  <joint name="wheel_right_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="right_wheel"/>
+    <origin xyz="0.05 -0.09 0.05" rpy="0 0 0"/> 
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.79769e+308" upper="1.79769e+308" effort="1" velocity="6"/>
+    <dynamics friction="0.1"/>
+  </joint>  
+
+  <gazebo>
+    <plugin name="DiffDynamicPlugin" filename="libDiffDynamicPlugin.so">
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <cmd_R_topic>VelocitySetR</cmd_R_topic>
+      <cmd_L_topic>VelocitySetL</cmd_L_topic>
+      <cmd_vel_topic>cmd_vel</cmd_vel_topic>
+      <enc_R_topic>VelocityEncR</enc_R_topic>
+      <enc_L_topic>VelocityEncL</enc_L_topic>
+      <robot_vel_topic>robot_vel</robot_vel_topic>
+      <mot_Vmax>5</mot_Vmax>
+      <mot_J>0.0005</mot_J>
+      <mot_R>2</mot_R>
+      <mot_L>0.01</mot_L>
+      <mot_K>0.01</mot_K>
+      <mot_b>0.00001</mot_b>
+      <mot_gear>34</mot_gear>
+      <robot_width>0.18</robot_width>
+      <wheel_radius>0.05</wheel_radius>
+      <pid_Kp>0.1</pid_Kp>
+      <pid_Ti>0.05</pid_Ti>
+      <pid_Td>0</pid_Td>
+      <input_type>1</input_type>
+      <rate>100</rate>
+    </plugin>
+  </gazebo>
+
+
+   <!-- RPLidar Link -->
+  <link name="rplidar_link">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.01" rpy="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.027"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="rplidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="rplidar_link"/>
+    <origin xyz="0.05 0 0.16" rpy="0 3.14 0"/> 
+  </joint>
+
+  <gazebo reference="rplidar_link">
+    <sensor name="rplidar" type="gpu_lidar">
+      <pose>0 0 0.0 0.0 0 0</pose>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14</min_angle>
+            <max_angle>3.14</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>12.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>     
+  </gazebo>
+
+
+  <link name="camera_link">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0.0 0 0.0"/> 
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.02"/> 
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera_link"/>
+    <origin xyz="0.1 0 0.08" rpy="0 0 0"/> 
+  </joint>
+
+  <gazebo reference="camera_link">
+    <sensor name="camera" type="camera">
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+              <width>1280</width>
+              <height>720</height>
+          </image>
+          <clip>
+              <near>0.1</near>
+              <far>100</far>  
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>false</visualize>
+      </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo>
+
+
+
 </robot>

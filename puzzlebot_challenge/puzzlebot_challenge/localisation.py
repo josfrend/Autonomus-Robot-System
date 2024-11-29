@@ -25,8 +25,8 @@ class Localisation(Node):
         self.wl = 0.0               # Left Wheel
         self.linear_speed = 0.0     # Linear Speed
         self.angular_speed = 0.0    # Angular Speed
-        self.l = 0.17               # Wheelbase
-        self.r = 0.066              # Radius of the Wheel
+        self.l = 0.19               # Wheelbase
+        self.r = 0.05              # Radius of the Wheel
         
         # Gains for model error
         self.kr = 0.15  
@@ -38,12 +38,12 @@ class Localisation(Node):
         self.positiony = 0.0
 
         # Known landmarks for Kalman Filter
-        self.landmark_true = {"1":[2.15, 3.21], "8": [3.14, 2.6065], "3": [3.14, 2.17], "7":[1.72, 1.1]}
+        self.landmark_true = {"1":[3.0, 2.3], "2": [3.0, 2.1], "3": [3.0, 1.9], "4":[1.0, 0.4]}
 
         # Initialize varibles for measured landmarks
         self.measured_landmarks = LandmarkList()
         self.measured_landmarks.landmarks = []
-        self.cube_id = '2'
+        self.cube_id = '0'
 
         # Initialize subscribers for wheel velocities and markers information
         self.sub_wl = self.create_subscription(Float32, '/VelocityEncL', self.cbWl, qos_profile_sensor_data)
@@ -88,7 +88,7 @@ class Localisation(Node):
         if self.aruco_info.length != 0:
             for aruco in self.aruco_info.aruco_array:
                 # If marker id in landmarks, save marker info
-                if aruco.id != self.cube_id and aruco.id in np.array(['1', '8', '3', '7']): 
+                if aruco.id != self.cube_id and aruco.id in np.array(['0', '1', '2', '3']): 
                     landmark = Landmark()
                     landmark.id = aruco.id
                     landmark.x, landmark.y = self.transform_cube_position(aruco.point.point)
@@ -127,6 +127,8 @@ class Localisation(Node):
         """
 
         u_estimation = np.array([[self.positionx],[self.positiony],[self.angle]])
+
+        self.get_logger().info(f'Current landmark: {self.measured_landmarks.landmarks[0].id}')
 
         # Position differential of landmark from current position estimation
         x_diff = self.landmark_true[self.measured_landmarks.landmarks[0].id][0] - self.positionx

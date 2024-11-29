@@ -33,7 +33,7 @@ class RobotControl(Node):
     and publishes velocity commands, goals, and other relevant information.
     """
     def __init__(self):
-        super().__init__('Robot Control')
+        super().__init__('Robot_Control')
 
         # Initialize subscribers for odometry, markers info and other nodes feedback
         self.odometry_sub = self.create_subscription(Odometry, '/odom', self.odometry_callback, 10)
@@ -69,7 +69,7 @@ class RobotControl(Node):
         # Initialize parameters
         self.current_state = StateMachine.FIND_LANDMARK
         self.cmd_vel = None
-        self.cube_id = '2'
+        self.cube_id = '0'
         self.object_state = ""
         self.arrived = None
         self.carga = False
@@ -80,7 +80,7 @@ class RobotControl(Node):
         self.aruco_info.aruco_array = []
         self.goal_ids = {
             'A': '1',
-            'B': '8',
+            'B': '2',
             'C': '3'
 
         }
@@ -207,11 +207,12 @@ class RobotControl(Node):
             
         elif self.current_state is StateMachine.GO_TO_TARGET:
             if self.aruco_info.length > 0 and self.carga == False:
-                if self.aruco_info.aruco_array[0].id == self.cube_id and self.aruco_info.aruco_array[0].point.point.z < 0.5:
+                if self.aruco_info.aruco_array[0].id == self.cube_id and self.aruco_info.aruco_array[0].point.point.z < 0.55:
                     stop_spin_msg = Twist()
                     self.velocity_pub.publish(stop_spin_msg)
                     self.handle_pub.publish(Int32(data=0))
                     self.object_state = 'lifted'
+                    self.carga = True # Avoid object handle node
                     self.current_state = StateMachine.HANDLE_OBJECT
                 else:
                     self.bug_pub.publish(Bool(data=True))
@@ -226,7 +227,7 @@ class RobotControl(Node):
                     self.goal = self.convergence_point
                     self.goal_pub.publish(self.goal)
                     self.current_state = StateMachine.GO_TO_TARGET
-                    self.carga = False
+                    # self.carga = False
                 elif self.object_state == "dropped":
                     self.goal.pose.position.x = 0.0
                     self.goal.pose.position.y = 0.0
@@ -235,7 +236,7 @@ class RobotControl(Node):
                 else: 
                     self.handle_run_pub.publish(Bool(data=True))
             else:
-                self.get_logger().info(f"Handle running trough pub")
+                # self.get_logger().info(f"Handle running trough pub")
                 self.handle_run_pub.publish(Bool(data = True))
                 
 
@@ -244,6 +245,8 @@ class RobotControl(Node):
             stop.linear.x = 0.0
             stop.angular.z = 0.0
             self.velocity_pub.publish(stop)
+
+        # self.get_logger().info(f'Current state: {self.current_state}, Current goal: {self.goal.pose.position}')
 
     def destroy_node(self):
         """

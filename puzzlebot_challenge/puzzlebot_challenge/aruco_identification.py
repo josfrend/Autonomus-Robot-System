@@ -35,6 +35,7 @@ class ArUco_tracker(Node):
         self.cv_bridge = CvBridge()
         self.width = 0 # Image width
         self.object_real_width = 0.04 # Measured marker real width
+        self.intrinsics = None
 
         # Initialize subscribers for camera info and camera image
         self.subscription = self.create_subscription(Image, '/video_source/raw', self.image_callback, 10)
@@ -60,7 +61,6 @@ class ArUco_tracker(Node):
         } 
         
 
-
     def image_callback(self, msg):
         """
         Callback function for the image topic.
@@ -77,8 +77,10 @@ class ArUco_tracker(Node):
         self.width = cv_image.shape[1]
         
         # The commands may vary depending on the openCV version used
+        # arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+        # arucoParams = cv2.aruco.DetectorParameters()
         arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-        arucoParams = cv2.aruco.DetectorParameters()
+        arucoParams = cv2.aruco.DetectorParameters_create()
 
         (corners, ids, rejected) = cv2.aruco.detectMarkers(cv_image, arucoDict, parameters=arucoParams)
         
@@ -108,7 +110,7 @@ class ArUco_tracker(Node):
                 h = abs(sorted_corners[0][1] - sorted_corners[3][1])
 
                 # Compute 3D puzzlebot frame coordinates
-                z_3d = (fx * self.object_real_width) / h
+                z_3d = (fx * self.object_real_width) / w * 2
                 x_3d = -(x - cx) * z_3d / fx
                 y_3d = (y - cy) * z_3d / fy
                 
@@ -123,10 +125,10 @@ class ArUco_tracker(Node):
                 aruco_info = Arucoinfo()
                 aruco_info.tag = str(i)
                 aruco_info.id = str(ids[i][0])
-                aruco_info.point.header.frame_id = 'puzzlebot'
+                aruco_info.point.header.frame_id = 'camera_link'
                 aruco_info.point.point.x = x_3d
                 aruco_info.point.point.y = y_3d
-                aruco_info.point.point.z = z_3d - 0.12
+                aruco_info.point.point.z = z_3d + 0.1
                 aruco_info.offset = offset
                 aruco_info.height = float(h)
                 aruco_info.width = float(w)
