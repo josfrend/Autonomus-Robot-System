@@ -93,6 +93,8 @@ class RobotControl(Node):
         self.convergence_point.pose.position.z = 0.0
         self.convergence_point.header.frame_id = 'world'
 
+        self.previous_state = ''
+
         # Initialize timer 
         self.start_time = self.get_clock().now()
         self.timer = self.create_timer(0.1, self.run)
@@ -193,7 +195,7 @@ class RobotControl(Node):
                     self.velocity_pub.publish(stop_spin_msg)
                     self.goal_pub.publish(self.goal)
                     self.current_state = StateMachine.GO_TO_TARGET
-                elif self.object_state == 'lifted' and self.arrived and self.aruco_info.aruco_array[0].id == self.goal_ids[self.desired_goal]:
+                elif self.object_state == 'lifted' and self.arrived and self.aruco_info.aruco_array[0].id == self.goal_ids[self.desired_goal] and abs(self.aruco_info.aruco_array[0].offset) < 100:
                     stop_spin_msg = Twist()
                     self.velocity_pub.publish(stop_spin_msg)
                     self.handle_pub.publish(Int32(data = 1))
@@ -212,12 +214,15 @@ class RobotControl(Node):
                     self.velocity_pub.publish(stop_spin_msg)
                     self.handle_pub.publish(Int32(data=0))
                     self.object_state = 'lifted'
-                    self.carga = True # Avoid object handle node
+                    self.carga = True                                   # Avoid object handle node
                     self.current_state = StateMachine.HANDLE_OBJECT
                 else:
                     self.bug_pub.publish(Bool(data=True))
             elif self.object_state == 'lifted' and self.arrived:
+                self.carga = False                                       # Avoid finishing after arriving to convergence point
                 self.current_state = StateMachine.FIND_LANDMARK
+            elif self.object_state == 'dropped' and self.arrived:
+                self.current_state = StateMachine.STOP
             else:
                 self.bug_pub.publish(Bool(data=True))
 
@@ -227,12 +232,11 @@ class RobotControl(Node):
                     self.goal = self.convergence_point
                     self.goal_pub.publish(self.goal)
                     self.current_state = StateMachine.GO_TO_TARGET
-                    # self.carga = False
                 elif self.object_state == "dropped":
                     self.goal.pose.position.x = 0.0
                     self.goal.pose.position.y = 0.0
                     self.goal_pub.publish(self.goal)
-                    self.current_state = StateMachine.STOP
+                    self.current_state = StateMachine.GO_TO_TARGET
                 else: 
                     self.handle_run_pub.publish(Bool(data=True))
             else:
@@ -246,7 +250,9 @@ class RobotControl(Node):
             stop.angular.z = 0.0
             self.velocity_pub.publish(stop)
 
-        # self.get_logger().info(f'Current state: {self.current_state}, Current goal: {self.goal.pose.position}')
+        if self.current_state != self.previous_state:
+            self.get_logger().info(f'Current state: {self.current_state}')
+        self.previous_state = self.current_state
 
     def destroy_node(self):
         """

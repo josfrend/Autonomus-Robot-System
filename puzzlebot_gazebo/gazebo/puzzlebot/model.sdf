@@ -301,7 +301,7 @@
         </frame>
 
         <frame name="rplidar_frame" attached_to='chassis'>
-            <pose>0 0.11 0.05 -1.5708 1.5708 0</pose>
+            <pose>0 0.11 0.05 1.5708 1.5708 0</pose>
         </frame>
                 
         <plugin

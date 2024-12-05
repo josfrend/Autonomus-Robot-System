@@ -1,5 +1,7 @@
 from ament_index_python.packages import get_package_share_directory
 
+import yaml
+import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import LaunchConfigurationEquals
@@ -15,8 +17,6 @@ ARGUMENTS = [
                           description='Use sim time'),
     DeclareLaunchArgument('robot_name', default_value='puzzlebot',
                           description='Ignition model name'),
-    DeclareLaunchArgument('namespace', default_value='',
-                          description='Robot namespace'),
     DeclareLaunchArgument('world', default_value='simple_world',
                           description='World name'),
 ]
@@ -25,45 +25,27 @@ ARGUMENTS = [
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     robot_name = LaunchConfiguration('robot_name')
-    dock_name = LaunchConfiguration('dock_name')
-    namespace = LaunchConfiguration('namespace')
     world = LaunchConfiguration('world')
 
     puzzlebot_gazebo_pkg = get_package_share_directory(
         'puzzlebot_gazebo')
+
+    yaml_file_path = os.path.join(puzzlebot_gazebo_pkg, 'config', 'gazebo.yaml')
+
+    with open(yaml_file_path, 'r') as yaml_file:
+        params = yaml.safe_load(yaml_file)
+    
+    description_package_name = params['parameters']['description_package']
+    description_launch_file = params['parameters']['description_launch']
+
     
     puzzlebot_description_pkg = get_package_share_directory(
-        'puzzlebot_challenge'
+        description_package_name
     )
 
-    leds = [
-        'power',
-        'motors',
-        'comms',
-        'wifi',
-        'battery',
-        'user1',
-        'user2'
-    ]
-
-    # pkg_irobot_create_ignition_bringup = get_package_share_directory(
-    #     'irobot_create_ignition_bringup')
-
-    # create3_ros_gz_bridge_launch = PathJoinSubstitution(
-    #     [pkg_irobot_create_ignition_bringup, 'launch', 'create3_ros_ignition_bridge.launch.py'])
-
-    # create3_bridge = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([create3_ros_gz_bridge_launch]),
-    #     launch_arguments=[
-    #         ('robot_name', robot_name),
-    #         ('dock_name', dock_name),
-    #         ('namespace', namespace),
-    #         ('world', world)
-    #     ]
-    # )
 
     puzzlebot_description_launch = PathJoinSubstitution(
-        [puzzlebot_description_pkg, 'launch', 'puzzlebot_description.launch.py']
+        [puzzlebot_description_pkg, 'launch', description_launch_file]
     )
 
     puzzlebot_gz_launch = PathJoinSubstitution(
@@ -77,7 +59,6 @@ def generate_launch_description():
     gazebo_simulator = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([puzzlebot_gz_launch]),
         launch_arguments=[
-            # ('namespace', namespace),
             ('world', world)
         ]
     )

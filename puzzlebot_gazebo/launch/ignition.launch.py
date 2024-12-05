@@ -1,4 +1,5 @@
 import os
+import yaml
 
 from pathlib import Path
 
@@ -26,30 +27,22 @@ def generate_launch_description():
     # Directories
     pkg_gazebo = get_package_share_directory(
         'puzzlebot_gazebo')
-    pkg_description = get_package_share_directory(
-        'puzzlebot_challenge'
-    )
-    # pkg_turtlebot4_ignition_gui_plugins = get_package_share_directory(
-    #     'turtlebot4_ignition_gui_plugins')
-    # pkg_turtlebot4_description = get_package_share_directory(
-    #     'turtlebot4_description')
-    # pkg_irobot_create_description = get_package_share_directory(
-    #     'irobot_create_description')
-    # pkg_irobot_create_ignition_bringup = get_package_share_directory(
-    #     'irobot_create_ignition_bringup')
-    # pkg_irobot_create_ignition_plugins = get_package_share_directory(
-    #     'irobot_create_ignition_plugins')
     pkg_ros_ign_gazebo = get_package_share_directory(
         'ros_gz_sim')
     
+    yaml_file_path = os.path.join(pkg_gazebo, 'config', 'gazebo.yaml')
+
+    with open(yaml_file_path, 'r') as yaml_file:
+        params = yaml.safe_load(yaml_file)
+    
+    gazebo_path = params['parameters']['gazebo_model_path']
 
     # Set ignition resource path
     ign_resource_path = SetEnvironmentVariable(
         name='GZ_SIM_RESOURCE_PATH',
         value=[
             os.path.join(pkg_gazebo, 'gazebo') + ':' + 
-            '/home/alfredo/ros2_ws/src/puzzlebot/puzzlebot_gazebo/gazebo' + ':' +
-            '/home/alfredo/ros2_ws/src/puzzlebot' + ':' +
+            gazebo_path + ':' +
             '$GZ_SIM_RESOURCE_PATH'])
     
     ign_gui_plugin_path = SetEnvironmentVariable(

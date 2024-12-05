@@ -177,8 +177,8 @@ class ObjectHandler(Node):
         if self.handle_instruction.data == 0:
             self.pick_or_drop_pub.publish(pick_up)
         elif self.handle_instruction.data == 1:
-            self.go_fordward(0.1)
-            time.sleep(3)
+            self.go_forward(0.1)
+            time.sleep(5)
             self.go_stop()
             self.pick_or_drop_pub.publish(drop_off)
             self.go_backwards(0.1)

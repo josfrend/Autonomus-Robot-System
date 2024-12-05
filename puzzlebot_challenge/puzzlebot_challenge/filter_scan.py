@@ -62,11 +62,11 @@ class ScanFilter(Node):
 		new_ranges = [r if abs(y) < self.extent else inf for r,y in zip(msg.ranges, points)]
 
 		# Substitute in the new ranges in the original message, and republish it
-		msg.ranges = new_ranges
+		# msg.ranges = new_ranges
 		msg.header.frame_id = 'rplidar_link'
 		self.pub.publish(msg)
 		# Find minimum and maximum range values
-		min_index = np.argmin(msg.ranges)
+		# min_index = np.argmin(msg.ranges)
 		# self.get_logger().info(f'{min_index}')
 		min_range = min(msg.ranges)
 		max_range = max(msg.ranges)

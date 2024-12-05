@@ -38,7 +38,7 @@ class Localisation(Node):
         self.positiony = 0.0
 
         # Known landmarks for Kalman Filter
-        self.landmark_true = {"1":[3.0, 2.3], "2": [3.0, 2.1], "3": [3.0, 1.9], "4":[1.0, 0.4]}
+        self.landmark_true = { "1":[2.95, 2.5], "2": [2.95, 2.1], "3": [2.95, 1.7], "4":[1.0, 0.8], "5":[2.0, 2.95]}
 
         # Initialize varibles for measured landmarks
         self.measured_landmarks = LandmarkList()
@@ -88,11 +88,17 @@ class Localisation(Node):
         if self.aruco_info.length != 0:
             for aruco in self.aruco_info.aruco_array:
                 # If marker id in landmarks, save marker info
-                if aruco.id != self.cube_id and aruco.id in np.array(['0', '1', '2', '3']): 
+                if aruco.id != self.cube_id and aruco.id in np.array(['1', '2', '3', '4', '5']) and aruco.point.point.z < 2.0: 
                     landmark = Landmark()
                     landmark.id = aruco.id
                     landmark.x, landmark.y = self.transform_cube_position(aruco.point.point)
+                    if len(self.measured_landmarks.landmarks) > 0:
+                        if self.measured_landmarks.landmarks[0].x > landmark.x:
+                            aux = self.measured_landmarks.landmarks[0]
+                            self.measured_landmarks.landmarks[0] = landmark
+                            landmark= aux
                     self.measured_landmarks.landmarks.append(landmark)
+
 
     def transform_cube_position(self, aruco_point):
         """
