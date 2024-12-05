@@ -13,6 +13,7 @@ setup(
         ('share/' + package_name + '/gazebo/plugins/', glob('gazebo/plugins/*.so')),
         ('share/' + package_name + '/models', glob('models/*.stl')),
         ('share/' + package_name + '/urdf', glob('urdf/*.urdf')),
+        ('share/' + package_name + '/config', glob('config/*.yaml')),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),

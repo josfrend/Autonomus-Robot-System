@@ -1,0 +1,4 @@
+parameters:
+  gazebo_model_path: <absolute path to package>/puzzlebot_gazebo/gazebo/
+  description_package: puzzlebot_challenge
+  description_launch: puzzlebot_description.launch.py
