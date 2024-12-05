@@ -214,7 +214,7 @@ class Bug2Controller(Node):
         """
         data = np.array(msg.ranges)
         self.front_distance = np.min(np.concatenate((data[0:40], data[680:720]))) # Define range of indexes for the front of the robot
-        self.frontL_distance = np.min(data[590:679])#np.min(data[41:130]) # Define range of indexes for the left side of the robot
+        self.frontL_distance = np.min(data[41:130]) # Define range of indexes for the left side of the robot
 
     def stop(self):
         """

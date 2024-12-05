@@ -66,8 +66,8 @@ class ScanFilter(Node):
 		msg.header.frame_id = 'rplidar_link'
 		self.pub.publish(msg)
 		# Find minimum and maximum range values
-		# min_index = np.argmin(msg.ranges)
-		# self.get_logger().info(f'{min_index}')
+		min_index = np.argmin(msg.ranges)
+		self.get_logger().info(f'{min_index}')
 		min_range = min(msg.ranges)
 		max_range = max(msg.ranges)
 
