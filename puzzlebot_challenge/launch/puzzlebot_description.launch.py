@@ -53,12 +53,6 @@ def generate_launch_description():
         arguments=['-d', rviz_config_path],
     )
 
-    tf2_ros = Node(
-            package='tf2_ros',
-            executable='static_transform_publisher',
-            name='map_joint',
-            arguments=['odomPose_x', 'odomPose_y', 'odomPose_z', 'odomPose_roll', 'odomPose_pitch', 'odomPose_yaw', 'map', 'odom']
-        )
 
     joint_state_publisher = Node(
         package='puzzlebot_challenge',
@@ -72,11 +66,6 @@ def generate_launch_description():
         ]
     )
 
-    pose_sim = Node(
-            package='puzzlebot_challenge',
-            executable='pose_sim',
-            name='puzzlebot_kinematics'
-    )
 
     localisation = Node(
             package = 'puzzlebot_challenge',
@@ -92,6 +81,12 @@ def generate_launch_description():
             parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
     )
 
+    aruco = Node(
+        package='puzzlebot_challenge',
+        executable='aruco',
+        name='aruco'
+    )
+
     # condition=IfCondition(LaunchConfiguration('rviz')),
 
 
@@ -103,6 +98,6 @@ def generate_launch_description():
     # ld.add_action(tf2_ros)
     ld.add_action(joint_state_publisher)
     ld.add_action(filter_scan)
-    # ld.add_action(pose_sim)
+    ld.add_action(aruco)
     ld.add_action(localisation)
     return ld

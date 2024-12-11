@@ -28,7 +28,7 @@ class ArUco_tracker(Node):
         super().__init__('aruco_identification')
 
         # Parameters handling
-        self.declare_parameter('display', False)
+        self.declare_parameter('display', False) 
         self.display = self.get_parameter('display').get_parameter_value().bool_value
 
         # Initialize variables
@@ -39,7 +39,7 @@ class ArUco_tracker(Node):
 
         # Initialize subscribers for camera info and camera image
         self.subscription = self.create_subscription(Image, '/video_source/raw', self.image_callback, 10)
-        self.subscription_info = self.create_subscription(CameraInfo, '/camera_info', self.camera_info_callback, 10)
+        self.subscription_info = self.create_subscription(CameraInfo, '/camera1/camera_info', self.camera_info_callback, 10)
 
         # Initialize publisher for ArUco array with marker information
         self.qr_pub = self.create_publisher(ArucoArray, '/aruco_info', 1)
@@ -110,7 +110,7 @@ class ArUco_tracker(Node):
                 h = abs(sorted_corners[0][1] - sorted_corners[3][1])
 
                 # Compute 3D puzzlebot frame coordinates
-                z_3d = (fx * self.object_real_width) / w * 2
+                z_3d = (fx * self.object_real_width) / w
                 x_3d = -(x - cx) * z_3d / fx
                 y_3d = (y - cy) * z_3d / fy
                 

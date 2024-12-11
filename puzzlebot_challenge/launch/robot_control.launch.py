@@ -32,12 +32,6 @@ def generate_launch_description():
         executable='robot_control',
         name='robot_control'
     )
-
-    aruco = Node(
-        package='puzzlebot_challenge',
-        executable='aruco',
-        name='aruco'
-    )
     
     bug2 = Node(
         package='puzzlebot_challenge',
@@ -58,7 +52,6 @@ def generate_launch_description():
     ld = LaunchDescription(ARGUMENTS)
     # Add nodes to LaunchDescription
     ld.add_action(control)
-    ld.add_action(aruco)
     ld.add_action(bug2)
     ld.add_action(handle)
     return ld

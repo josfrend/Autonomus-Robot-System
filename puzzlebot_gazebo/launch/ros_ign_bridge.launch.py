@@ -126,7 +126,7 @@ def generate_launch_description():
             (['/world/', world,
               '/model/', robot_name,
               '/link/chassis/sensor/camera/camera_info'],
-             '/camera_info')
+             '/camera1/camera_info')
             ]
     )
 
